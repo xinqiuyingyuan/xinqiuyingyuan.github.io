@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>意识提醒</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(135deg, #1e1e1e, #2a2a2a);
+      color: #f2f2f2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 720px;
+      background: rgba(0, 0, 0, 0.45);
+      border-radius: 16px;
+      padding: 40px 32px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    }
+
+    h1 {
+      font-size: 36px;
+      margin-bottom: 16px;
+      text-align: center;
+      color: #ff6b6b;
+    }
+
+    .question {
+      font-size: 20px;
+      text-align: center;
+      margin-bottom: 32px;
+      line-height: 1.6;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    button {
+      min-width: 120px;
+      padding: 14px 20px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+
+    button:active {
+      transform: translateY(1px);
+      box-shadow: none;
+    }
+
+    .yes {
+      background: #4caf50;
+      color: #ffffff;
+      box-shadow: 0 6px 14px rgba(76, 175, 80, 0.4);
+    }
+
+    .no {
+      background: #ff9800;
+      color: #ffffff;
+      box-shadow: 0 6px 14px rgba(255, 152, 0, 0.4);
+    }
+
+    .message {
+      text-align: center;
+      font-size: 18px;
+      min-height: 1.5em;
+      margin-bottom: 28px;
+    }
+
+    .schedule {
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      padding-top: 24px;
+    }
+
+    .schedule h2 {
+      font-size: 18px;
+      margin-bottom: 12px;
+      color: #9cdcfe;
+    }
+
+    .schedule ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .schedule li {
+      padding: 8px 0;
+      font-size: 15px;
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+    }
+
+    .schedule li.overdue {
+      color: #ff6b6b;
+      font-weight: 600;
+    }
+
+    .schedule li span {
+      opacity: 0.85;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>请停下来!</h1>
+
+    <div class="question">你现在是有意识的要进行娱乐或者学习么?</div>
+
+    <div class="buttons">
+      <button class="yes" onclick="handleYes()">是</button>
+      <button class="no" onclick="handleNo()">否</button>
+    </div>
+
+    <div id="message" class="message"></div>
+
+    <div id="countdown" class="message"></div>
+
+    <div class="schedule">
+      <h2>当前时间安排</h2>
+      <ul id="scheduleList"></ul>
+    </div>
+  </div>
+
+  <script>
+    const messageEl = document.getElementById('message');
+    const scheduleList = document.getElementById('scheduleList');
+
+    function handleYes() {
+      messageEl.textContent = '很好,不要忘了初心,坚持住';
+    }
+
+    function handleNo() {
+      messageEl.textContent = '请你不要再误入歧途了,最后的机会了,请坚持住这三个月';
+    }
+
+    // 示例学习 / 工作阶段（可自行替换）
+    const phases = [
+      { name: 'HTML + CSS 阶段完成', date: '2026-01-22' },
+      { name: 'JavaScript 阶段完成', date: '2026-02-03' },
+      { name: 'jQuery 阶段完成', date: '2026-02-06' },
+      { name: 'ES6 / ES7 / ES8 阶段完成', date: '2026-02-09' },
+      { name: 'Vue2 阶段完成', date: '2026-02-15' },
+      { name: 'TypeScript + Vue3 阶段完成', date: '2026-03-01' },
+      { name: 'React 阶段完成', date: '2026-03-10' },
+      { name: '小程序 + uni-app 阶段完成', date: '2026-03-21' },
+      { name: 'Node + Express + MySQL 阶段完成', date: '2026-04-02' },
+      { name: 'Webpack 与 Git 阶段完成', date: '2026-04-04' }
+    ];
+
+    function addOneDay(dateStr) {
+      const d = new Date(dateStr);
+      d.setDate(d.getDate() + 1);
+      return d.toISOString().slice(0, 10);
+    }
+
+    function renderSchedule() {
+      scheduleList.innerHTML = '';
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      let nextPhase = null;
+      let overdueCount = 0;
+
+      phases.forEach(p => {
+        const phaseDate = new Date(p.date);
+        if (phaseDate < today) overdueCount++;
+      });
+
+      // 如果存在超期节点，直接进入警告模式
+      if (overdueCount >= 1) {
+        document.querySelector('.schedule').innerHTML = `
+          <h2 style="color:#ff6b6b">警告</h2>
+          <div style="text-align:center;font-size:18px;line-height:1.8;color:#ff6b6b">
+            已出现超期节点。<br/>
+            计划正在失效。<br/>
+            你现在看到的不是提醒，而是结果。
+          </div>
+        `;
+        document.getElementById('countdown').textContent = '';
+        return;
+      }
+
+      phases.forEach(p => {
+        const li = document.createElement('li');
+        const name = document.createElement('span');
+        const date = document.createElement('span');
+        const phaseDate = new Date(p.date);
+
+        name.textContent = p.name;
+        date.textContent = p.date;
+
+        if (!nextPhase && phaseDate >= today) {
+          nextPhase = phaseDate;
+        }
+
+        li.appendChild(name);
+        li.appendChild(date);
+        scheduleList.appendChild(li);
+      });
+
+      if (nextPhase) {
+        const diffTime = nextPhase - today;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        document.getElementById('countdown').textContent = `距离下一个节点还剩 ${diffDays} 天`;
+      } else {
+        document.getElementById('countdown').textContent = '所有阶段已到期';
+      }
+    }
+
+        li.appendChild(name);
+        li.appendChild(date);
+        scheduleList.appendChild(li);
+      });
+
+      if (nextPhase) {
+        const diffTime = nextPhase - today;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        document.getElementById('countdown').textContent = `距离下一个节点还剩 ${diffDays} 天`;
+      } else {
+        document.getElementById('countdown').textContent = '所有阶段已到期';
+      }
+    });
+    }
+
+    renderSchedule();
+  </script>
+</body>
+</html>
+
