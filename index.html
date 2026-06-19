@@ -162,7 +162,7 @@
 
     function handleYes() {
       messageEl.className = 'message yes-strong';
-      messageEl.textContent = '不要骗自己！！！一定要好好学！！！';
+      messageEl.textContent = '不要骗自己！加油！';
     }
 
     function handleNo() {
@@ -188,27 +188,6 @@
       today.setHours(0, 0, 0, 0);
 
       let overdue = false;
-      let nextPhaseDate = null;
-
-      for (const p of phases) {
-        const d = new Date(p.date);
-        if (d < today) {
-          overdue = true;
-          break;
-        }
-      }
-
-      if (overdue) {
-        document.querySelector('.schedule').innerHTML = `
-          <h2 style="color:#ff6b6b">警告</h2>
-          <div style="text-align:center;font-size:18px;line-height:1.8;color:#ff6b6b">
-            已出现超期节点。<br/>
-            计划正在失效。<br/>
-            你现在看到的不是提醒，而是结果。
-          </div>
-        `;
-        return;
-      }
 
       phases.forEach(p => {
         const li = document.createElement('li');
@@ -219,14 +198,30 @@
         name.textContent = p.name;
         date.textContent = p.date;
 
-        if (!nextPhaseDate && d >= today) {
-          nextPhaseDate = d;
+        if (d < today) {
+          overdue = true;
+          li.style.color = '#ff6b6b';
+          li.style.textDecoration = 'line-through';
+          if (!nextPhaseDate && d >= today) {
+            nextPhaseDate = d;
+          }
+        } else {
+          if (!nextPhaseDate) {
+            nextPhaseDate = d;
+          }
         }
 
         li.appendChild(name);
         li.appendChild(date);
         scheduleList.appendChild(li);
       });
+
+      if (overdue) {
+        const warning = document.createElement('div');
+        warning.style.cssText = 'color:#ff6b6b;text-align:center;font-size:14px;margin-bottom:8px;';
+        warning.textContent = '⚠ 已出现超期节点，请反思';
+        scheduleList.parentNode.insertBefore(warning, scheduleList);
+      }
 
       if (nextPhaseDate) {
         const diffDays = Math.ceil((nextPhaseDate - today) / (1000 * 60 * 60 * 24));
