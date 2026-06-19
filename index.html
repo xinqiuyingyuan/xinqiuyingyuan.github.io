@@ -139,7 +139,7 @@
   <div class="container">
     <h1>请停下来!</h1>
 
-    <div class="question">你现在是有意识的要进行娱乐或者学习么?</div>
+    <div class="question">你现在是要学习么?</div>
 
     <div class="buttons">
       <button class="yes" onclick="handleYes()">是</button>
@@ -167,15 +167,13 @@
 
     function handleNo() {
       messageEl.className = 'message no-strong';
-      messageEl.textContent = '请你不要再误入歧途了,最后的机会了,请坚持住这三个月';
+      messageEl.textContent = '请你不要再误入歧途了,最后的机会了,请坚持住这五个月';
     }
 
     const phases = [
-      { name: 'Vue2 阶段完成', date: '2026-02-26' },
-      { name: 'TypeScript + Vue3 阶段完成', date: '2026-03-18' },
-      { name: 'React 阶段完成', date: '2026-03-31' },
-      { name: 'Node + Express + MySQL 阶段完成', date: '2026-04-15' },
-      { name: 'Webpack 与 Git 阶段完成', date: '2026-04-17' },
+      { name: '微积分考试', date: '2026-06-21' },
+      { name: '编译原理考试', date: '2026-06-26' },
+      { name: '物理考试', date: '2026-07-06' },
     ];
 
     function renderSchedule() {
