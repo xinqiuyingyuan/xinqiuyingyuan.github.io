@@ -162,12 +162,16 @@
 
     function handleYes() {
       messageEl.className = 'message yes-strong';
-      messageEl.textContent = '很好,不要忘了初心,坚持住';
+      messageEl.textContent = '不要骗自己！！！一定要好好学！！！';
     }
 
     function handleNo() {
       messageEl.className = 'message no-strong';
-      messageEl.textContent = '请你不要再误入歧途了,最后的机会了,请坚持住这五个月';
+      const targetDate = new Date('2026-11-29');
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const diffDays = Math.ceil((targetDate - today) / (1000 * 60 * 60 * 24));
+      messageEl.textContent = `请你不要再误入歧途了,最后的机会了,请坚持住这${diffDays}天`;
     }
 
     const phases = [
